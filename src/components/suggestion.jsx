@@ -41,12 +41,12 @@ const Container = styled.div`
       padding: 5px;
       margin: 0 10px 0 0;
       border-radius: 5px;
-      background: #1e1616;
+      background: var(--icon);
       cursor: pointer;
     }
 
     p {
-      color: var(--white);
+      color: var(--text);
       text-transform: capitalize;
       cursor: pointer;
     }

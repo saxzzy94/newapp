@@ -61,6 +61,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  box-shadow: var(--shadow) 0px 10px 50px;
 
   .div {
     width: 140px;
@@ -72,7 +73,7 @@ const Container = styled.div`
     margin: 0 10px;
 
     .num {
-      color: var(--white);
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
