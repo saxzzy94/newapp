@@ -116,7 +116,7 @@ function App() {
 
 const Container = styled.div`
   width: 100%;
-  height: auto;
+  height: 100vh;
   /* background: linear-gradient(75.96deg, #8d2ed7 0%, #c277fd 99.48%); */
   background: var(--black);
   /* padding: 50px 0; */
