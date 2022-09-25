@@ -191,7 +191,7 @@ const Container = styled.div`
   }
 
   .search {
-    width: 800px;
+    width: 650px;
     height: auto;
     background: var(--black);
     margin: 30px 0;

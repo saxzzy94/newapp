@@ -53,7 +53,7 @@ const Icons = () => {
 };
 
 const Container = styled.div`
-  width: auto;
+  width: 650px;
   height: 150px;
   padding: 20px 10px;
   background: var(--black);
@@ -71,6 +71,7 @@ const Container = styled.div`
     align-items: center;
     position: relative;
     margin: 0 10px;
+    cursor: pointer;
 
     .num {
       color: #ffffff;
