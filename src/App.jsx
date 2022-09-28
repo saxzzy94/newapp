@@ -137,17 +137,24 @@ function App() {
             onKeyDown={handleKeyDown}
           />
         </form>
-        <div className="section">
-          <div className="title">
-            <p>Suggestions</p>
+        {suggestionsActive && (
+          <div className="section">
+            <div className="title">
+              <p>Suggestions</p>
+            </div>
+            <div className="content">
+              {suggestions.length > 0 ? (
+                suggestions.map((suggestion) => (
+                  <Suggestion suggestion={suggestion} key={suggestion?.id} />
+                ))
+              ) : (
+                <div className="para">
+                  <p>No suggestions</p>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="content">
-            {suggestionsActive &&
-              suggestions.map((suggestion) => (
-                <Suggestion suggestion={suggestion} key={suggestion?.id} />
-              ))}
-          </div>
-        </div>
+        )}
         <div className="section">
           <div className="title">
             <p>Commands</p>
@@ -296,6 +303,17 @@ const Container = styled.div`
 
       .content {
         width: 100%;
+
+        .para {
+          width: 100%;
+          height: 25px;
+
+          p {
+            color: var(--text);
+            font-weight: 700;
+            text-align: center;
+          }
+        }
       }
     }
   }
