@@ -26,7 +26,7 @@ function App() {
     defaultDark ? "dark" : "light"
   );
 
-  const [suggestions, setSuggestions] = React.useState([
+  const [data, setData] = React.useState([
     {
       id: 1,
       name: "linear",
@@ -54,6 +54,11 @@ function App() {
     },
   ]);
 
+  const [suggestions, setSuggestions] = React.useState([]);
+  const [suggestionIndex, setSuggestionIndex] = React.useState(0);
+  const [suggestionsActive, setSuggestionsActive] = React.useState(false);
+  const [value, setValue] = React.useState("");
+
   const [commands, setCommands] = React.useState([
     {
       id: 1,
@@ -77,26 +82,70 @@ function App() {
     setTheme(newTheme);
   };
 
+  const handleChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    setValue(query);
+    if (query.length > 1) {
+      const filterSuggestions = data.filter(
+        (suggestion) => suggestion.name.toLowerCase().indexOf(query) > -1
+      );
+      setSuggestions(filterSuggestions);
+      setSuggestionsActive(true);
+    } else {
+      setSuggestionsActive(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    // UP ARROW
+    if (e.keyCode === 38) {
+      if (suggestionIndex === 0) {
+        return;
+      }
+      setSuggestionIndex(suggestionIndex - 1);
+    }
+    // DOWN ARROW
+    else if (e.keyCode === 40) {
+      if (suggestionIndex - 1 === suggestions.length) {
+        return;
+      }
+      setSuggestionIndex(suggestionIndex + 1);
+    }
+    // ENTER
+    else if (e.keyCode === 13) {
+      setValue(suggestions[suggestionIndex]);
+      setSuggestionIndex(0);
+      setSuggestionsActive(false);
+    }
+  };
+
   return (
     <Container data-theme={theme}>
-      <label class="switch">
+      <label className="switch">
         <input type="checkbox" />
-        <span class="slider round" onClick={switchTheme}></span>
+        <span className="slider round" onClick={switchTheme}></span>
       </label>
       <Icons />
       <div className="search">
         <form className="input">
           <BiSearch className="icon" />
-          <input type="text" placeholder="Search here...." />
+          <input
+            type="text"
+            placeholder="Search here...."
+            value={value}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+          />
         </form>
         <div className="section">
           <div className="title">
             <p>Suggestions</p>
           </div>
           <div className="content">
-            {suggestions.map((suggestion) => (
-              <Suggestion suggestion={suggestion} key={suggestion?.id} />
-            ))}
+            {suggestionsActive &&
+              suggestions.map((suggestion) => (
+                <Suggestion suggestion={suggestion} key={suggestion?.id} />
+              ))}
           </div>
         </div>
         <div className="section">
