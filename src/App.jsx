@@ -1,23 +1,17 @@
 import React from "react";
+import axios from "axios";
 import styled from "styled-components";
 import useLocalStorage from "use-local-storage";
 
 //icons
 import { BiSearch } from "react-icons/bi";
-import {
-  FigmaIcon,
-  RaycastIcon,
-  YouTubeIcon,
-  SlackIcon,
-  LinearIcon,
-  CopyIcon,
-  CopiedIcon,
-} from "./icons/icons";
+import { CopyIcon, CopiedIcon } from "./icons/icons";
 
 //components
 import Icons from "./components/icons";
-import Suggestion from "./components/suggestion";
 import Command from "./components/command";
+import Suggestion from "./components/suggestion";
+import Instruction from "./components/instruction";
 
 function App() {
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -26,38 +20,10 @@ function App() {
     defaultDark ? "dark" : "light"
   );
 
-  const [data, setData] = React.useState([
-    {
-      id: 1,
-      name: "linear",
-      icon: LinearIcon,
-    },
-    {
-      id: 2,
-      name: "figma",
-      icon: FigmaIcon,
-    },
-    {
-      id: 3,
-      name: "slack",
-      icon: SlackIcon,
-    },
-    {
-      id: 4,
-      name: "youtube",
-      icon: YouTubeIcon,
-    },
-    {
-      id: 5,
-      name: "raycast",
-      icon: RaycastIcon,
-    },
-  ]);
-
   const [suggestions, setSuggestions] = React.useState([]);
-  const [suggestionIndex, setSuggestionIndex] = React.useState(0);
   const [suggestionsActive, setSuggestionsActive] = React.useState(false);
   const [value, setValue] = React.useState("");
+  const [instruction, setInstruction] = React.useState("Sirch the web");
 
   const [commands, setCommands] = React.useState([
     {
@@ -83,41 +49,35 @@ function App() {
   };
 
   const handleChange = (e) => {
-    const query = e.target.value.toLowerCase();
-    setValue(query);
-    if (query.length > 1) {
-      const filterSuggestions = data.filter(
-        (suggestion) => suggestion.name.toLowerCase().indexOf(query) > -1
-      );
-      setSuggestions(filterSuggestions);
-      setSuggestionsActive(true);
-    } else {
-      setSuggestionsActive(false);
-    }
+    setValue(e.target.value.toLowerCase());
+    clearTimeout();
+
+    setTimeout(() => {
+      axios
+        .get(
+          `https://api.bing.microsoft.com/v7.0/Suggestions?mkt=en-US&q=${value}`,
+          {
+            headers: {
+              "Ocp-Apim-Subscription-Key": "feb3d66b1dce4a20baf44ca9aa50b749",
+            },
+          }
+        )
+        .then((results) => {
+          console.log(results.data);
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    }, 2000);
   };
 
-  const handleKeyDown = (e) => {
-    // UP ARROW
-    if (e.keyCode === 38) {
-      if (suggestionIndex === 0) {
-        return;
-      }
-      setSuggestionIndex(suggestionIndex - 1);
+  React.useEffect(() => {
+    if (value?.length === 0) {
+      setInstruction("Sirch the web");
+    } else {
+      setInstruction("Enter to go to domain");
     }
-    // DOWN ARROW
-    else if (e.keyCode === 40) {
-      if (suggestionIndex - 1 === suggestions.length) {
-        return;
-      }
-      setSuggestionIndex(suggestionIndex + 1);
-    }
-    // ENTER
-    else if (e.keyCode === 13) {
-      setValue(suggestions[suggestionIndex]);
-      setSuggestionIndex(0);
-      setSuggestionsActive(false);
-    }
-  };
+  }, [value]);
 
   return (
     <Container data-theme={theme}>
@@ -134,7 +94,6 @@ function App() {
             placeholder="Search here...."
             value={value}
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
           />
         </form>
         {suggestionsActive && (
@@ -165,6 +124,7 @@ function App() {
             ))}
           </div>
         </div>
+        <Instruction text={instruction} />
       </div>
     </Container>
   );
