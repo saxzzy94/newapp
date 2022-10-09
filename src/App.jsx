@@ -23,7 +23,11 @@ function App() {
   const [suggestions, setSuggestions] = React.useState([]);
   const [suggestionsActive, setSuggestionsActive] = React.useState(false);
   const [value, setValue] = React.useState("");
-  const [instruction, setInstruction] = React.useState("Sirch the web");
+
+  //instructions
+  const [one, setOne] = React.useState("");
+  const [two, setTwo] = React.useState("");
+  const [three, setThree] = React.useState("");
 
   const [commands, setCommands] = React.useState([
     {
@@ -50,34 +54,25 @@ function App() {
 
   const handleChange = (e) => {
     setValue(e.target.value.toLowerCase());
-    clearTimeout();
 
-    setTimeout(() => {
-      axios
-        .get(
-          `https://api.bing.microsoft.com/v7.0/Suggestions?mkt=en-US&q=${value}`,
-          {
-            headers: {
-              "Ocp-Apim-Subscription-Key": "feb3d66b1dce4a20baf44ca9aa50b749",
-            },
-          }
-        )
-        .then((results) => {
-          console.log(results.data);
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-    }, 2000);
+    if (e.nativeEvent.data === " ") {
+      setTwo("Google SERP");
+      setThree("Results");
+    } else if (value.length > 0) {
+      setTwo("Go to domain");
+      setThree("Pages");
+    } else {
+      setOne("Sirch the web");
+      setTwo("Save current page");
+      setThree("Suggestions");
+    }
   };
 
   React.useEffect(() => {
-    if (value?.length === 0) {
-      setInstruction("Sirch the web");
-    } else {
-      setInstruction("Enter to go to domain");
-    }
-  }, [value]);
+    setOne("Sirch the web");
+    setTwo("Save current page");
+    setThree("Suggestions");
+  }, []);
 
   return (
     <Container data-theme={theme}>
@@ -124,7 +119,7 @@ function App() {
             ))}
           </div>
         </div>
-        <Instruction text={instruction} />
+        <Instruction one={one} two={two} three={three} />
       </div>
     </Container>
   );

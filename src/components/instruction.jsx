@@ -4,19 +4,19 @@ import styled from "styled-components";
 import { AiOutlineEnter } from "react-icons/ai";
 import { BsArrowRight } from "react-icons/bs";
 
-const Instruction = ({ text }) => {
+const Instruction = ({ one, two, three }) => {
   return (
     <Container>
       <div className="instructions">
-        <p>{text}</p>
+        <p>{one}</p>
       </div>
       <div className="commands">
         <div className="one">
-          <p>Search</p>
+          <p>{two}</p>
           <AiOutlineEnter className="icon" />
         </div>
         <div className="two">
-          <p>Navigate</p>
+          <p>{three}</p>
           <BsArrowRight className="icon" />
         </div>
       </div>
@@ -40,11 +40,11 @@ const Container = styled.div`
   }
 
   .instructions {
-    width: 50%;
+    width: 35%;
   }
 
   .commands {
-    width: 50%;
+    width: 60%;
     height: 100%;
     display: flex;
     flex-direction: row;
