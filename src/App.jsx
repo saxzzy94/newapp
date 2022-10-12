@@ -6,6 +6,7 @@ import useLocalStorage from "use-local-storage";
 //icons
 import { BiSearch } from "react-icons/bi";
 import { CopyIcon, CopiedIcon } from "./icons/icons";
+import { BsArrowRight, BsArrowDown } from "react-icons/bs";
 
 //components
 import Icons from "./components/icons";
@@ -28,6 +29,7 @@ function App() {
   const [one, setOne] = React.useState("");
   const [two, setTwo] = React.useState("");
   const [three, setThree] = React.useState("");
+  const [five, setFive] = React.useState("");
 
   const [commands, setCommands] = React.useState([
     {
@@ -58,13 +60,16 @@ function App() {
     if (e.nativeEvent.data === " ") {
       setTwo("Google SERP");
       setThree("Results");
-    } else if (value.length > 0) {
+      setFive("right");
+    } else if (e.target.value.length > 0) {
       setTwo("Go to domain");
       setThree("Pages");
+      setFive("down");
     } else {
       setOne("Sirch the web");
       setTwo("Save current page");
       setThree("Suggestions");
+      setFive("right");
     }
   };
 
@@ -72,6 +77,7 @@ function App() {
     setOne("Sirch the web");
     setTwo("Save current page");
     setThree("Suggestions");
+    setFive("right");
   }, []);
 
   return (
@@ -119,7 +125,13 @@ function App() {
             ))}
           </div>
         </div>
-        <Instruction one={one} two={two} three={three} />
+        <Instruction one={one} two={two} three={three} icon={five}>
+          {five === "right" ? (
+            <BsArrowRight className="icon" />
+          ) : (
+            <BsArrowDown className="icon" />
+          )}
+        </Instruction>
       </div>
     </Container>
   );

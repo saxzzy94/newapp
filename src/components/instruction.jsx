@@ -2,9 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 import { AiOutlineEnter } from "react-icons/ai";
-import { BsArrowRight } from "react-icons/bs";
 
-const Instruction = ({ one, two, three }) => {
+const Instruction = ({ one, two, three, children }) => {
   return (
     <Container>
       <div className="instructions">
@@ -17,7 +16,7 @@ const Instruction = ({ one, two, three }) => {
         </div>
         <div className="two">
           <p>{three}</p>
-          <BsArrowRight className="icon" />
+          {children}
         </div>
       </div>
     </Container>
