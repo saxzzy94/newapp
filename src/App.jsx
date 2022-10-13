@@ -138,11 +138,11 @@ function App() {
 }
 
 const Container = styled.div`
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   /* background: linear-gradient(75.96deg, #8d2ed7 0%, #c277fd 99.48%); */
-  background: var(--black);
   /* padding: 50px 0; */
+  background: var(--black);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -153,9 +153,10 @@ const Container = styled.div`
     display: inline-block;
     width: 60px;
     height: 34px;
-    position: absolute;
+    position: relative;
     top: 10px;
     right: 10px;
+    margin: 0 0 30px 0;
   }
 
   /* Hide default HTML checkbox */
