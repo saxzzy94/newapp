@@ -1,5 +1,4 @@
 import React from "react";
-import axios from "axios";
 import styled from "styled-components";
 import useLocalStorage from "use-local-storage";
 
@@ -153,8 +152,8 @@ const Container = styled.div`
     display: inline-block;
     width: 60px;
     height: 34px;
-    position: relative;
-    top: 10px;
+    position: absolute;
+    bottom: 5px;
     right: 10px;
     margin: 0 0 30px 0;
   }
