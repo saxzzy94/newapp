@@ -1,27 +1,31 @@
 {
   "name": "Sirch",
   "version": "1.0.0",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "description": "Your next-gen search engine",
   "icons": {
     "512": "logo.png"
   },
-  "browser_action": {
+  "action": {
     "default_icon": "logo.png",
     "default_popup": "index.html"
   },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["activeTab", "scripting", "tabs"],
   "commands": {
-    "_execute_browser_action": {
-      "suggested_key": {
-        "default": "Ctrl+Q"
-      }
+    "open-popup": {
+      "suggested_key": "Ctrl+M",
+      "description": "Open a popup",
+      "global": true
     },
-    "duplicate-tab": {
+    "_execute_action": {
       "suggested_key": {
-        "default": "Ctrl+Q",
-        "mac": "Ctrl+Q"
+        "default": "Ctrl+M",
+        "mac": "MacCtrl+M"
       },
-      "description": "Duplicates the currently active tab because... why not?"
+      "description": "Open a popup"
     }
   }
 }
