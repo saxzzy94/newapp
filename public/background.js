@@ -19,9 +19,9 @@ chrome.commands.onCommand.addListener(async (command) => {
 });
 
 const open_popup = () => {
-  const iframe = document.createElement("iframe");
+  const iframe = document.createElement("div");
   iframe.src = chrome.runtime.getURL("index.html");
   iframe.style =
-    "position: fixed; top: 0; right: 0; width: 100%; height: 100%;";
+    "position: fixed; top: 50%; left: 50%; width: 800px; height: 100%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); background: transparent;";
   document.body.appendChild(iframe);
 };

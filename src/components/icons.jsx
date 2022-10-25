@@ -1,51 +1,106 @@
 import React from "react";
 import styled from "styled-components";
+import ContentLoader from "react-content-loader"
 
-const Icons = () => {
+
+const Icons = ({ sites, loading  }) => {
+
   return (
     <Container>
       <div className="div">
         <div className="num red">
-          <p>45</p>
         </div>
         <div className="gray">
-          <img src="/icons/nyt.png" alt="nyt" />
+          {
+            loading ? (
+              <ContentLoader>
+                <rect x="0" y="0" width="100%" height="100%" />
+              </ContentLoader>
+            ) : (
+              <>
+              {
+                sites.length > 0 ? (
+                  <img src={`${sites[0]?.logo}`} alt={`${sites[0]?.name}`} />    
+                ) : (null)
+              }
+              </>
+            )
+          }
         </div>
         <div className="name">
-          <p>NYT</p>
+          <p>{sites[0]?.name}</p>
         </div>
       </div>
       <div className="div">
         <div className="num blue">
-          <p>367</p>
         </div>
-        <div className="gray">
-          <img src="/icons/nautilus.png" alt="nautilus" />
+         <div className="gray">
+          {
+            loading ? (
+              <ContentLoader>
+                <rect x="0" y="0" width="100%" height="100%" />
+              </ContentLoader>
+            ) : (
+              <>
+              {
+                sites.length > 0 ? (
+                  <img src={`${sites[1]?.logo}`} alt={`${sites[1]?.name}`} />    
+                ) : (null)
+              }
+              </>
+            )
+          }
         </div>
         <div className="name">
-          <p>Nautilus</p>
+          <p>{sites[1]?.name}</p>
         </div>
       </div>
       <div className="div">
         <div className="num blue">
-          <p>67</p>
         </div>
-        <div className="gray">
-          <img src="/icons/netflix.png" alt="netflix" />
+         <div className="gray">
+          {
+            loading ? (
+              <ContentLoader>
+                <rect x="0" y="0" width="100%" height="100%" />
+              </ContentLoader>
+            ) : (
+              <>
+              {
+                sites.length > 0 ? (
+                  <img src={`${sites[2]?.logo}`} alt={`${sites[2]?.name}`} />    
+                ) : (null)
+              }
+              </>
+            )
+          }
         </div>
         <div className="name">
-          <p>Netflix</p>
+          <p>{sites[2]?.name}</p>
         </div>
       </div>
       <div className="div">
         <div className="num red">
-          <p>12</p>
         </div>
-        <div className="gray">
-          <img src="/icons/nothing.png" alt="nothing" />
+         <div className="gray">
+          {
+            loading ? (
+              <ContentLoader>
+                <rect x="0" y="0" width="100%" height="100%" />
+              </ContentLoader>
+            ) : (
+              <>
+              {
+                sites.length > 0 ? (
+                  <img src={`${sites[3]?.logo}`} alt={`${sites[3]?.name}`} />    
+                ) : (null)
+              }
+              </>
+            )
+          }
         </div>
         <div className="name">
-          <p>Nothing</p>
+          <p>{sites[3]?.name}</p>
         </div>
       </div>
     </Container>
@@ -99,22 +154,15 @@ const Container = styled.div`
     .gray {
       width: 100%;
       height: 80%;
-      background: var(--gray);
+      /* background: var(--gray); */
       border-radius: 5px;
       display: flex;
       align-items: center;
       justify-content: center;
 
-      .icon {
-        padding: 10px;
-        background: var(--black);
-        border-radius: 5px;
-        overflow: hidden;
-
-        img {
-          width: 100%;
-          object-position: center;
-        }
+      img {
+        width: 50%;
+        object-position: center;
       }
     }
 

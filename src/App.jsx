@@ -1,3 +1,4 @@
+import axios from "axios"
 import React from "react";
 import styled from "styled-components";
 import useLocalStorage from "use-local-storage";
@@ -20,9 +21,11 @@ function App() {
     defaultDark ? "dark" : "light"
   );
 
+  const [value, setValue] = React.useState("");
+  const [sites, setSites] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
   const [suggestions, setSuggestions] = React.useState([]);
   const [suggestionsActive, setSuggestionsActive] = React.useState(false);
-  const [value, setValue] = React.useState("");
 
   //instructions
   const [one, setOne] = React.useState("");
@@ -54,7 +57,15 @@ function App() {
   };
 
   const handleChange = (e) => {
+    setLoading(true);
+    setSites([]);
     setValue(e.target.value.toLowerCase());
+
+    axios.get(`https://autocomplete.clearbit.com/v1/companies/suggest?query=${e.target.value.toLowerCase()}`, {
+    }).then((response) => {
+      setSites(response.data);
+      setLoading(false);
+    })
 
     if (e.nativeEvent.data === " ") {
       setTwo("Google SERP");
@@ -79,13 +90,19 @@ function App() {
     setFive("right");
   }, []);
 
+  React.useEffect(() => {
+    if(sites.length === 0 && value.length === 0) {
+      setLoading(false)
+    }
+  }, [sites])
+
   return (
     <Container data-theme={theme}>
       <label className="switch">
         <input type="checkbox" />
         <span className="slider round" onClick={switchTheme}></span>
       </label>
-      <Icons />
+      <Icons sites={sites} loading={loading} />
       <div className="search">
         <form className="input">
           <BiSearch className="icon" />
@@ -139,9 +156,8 @@ function App() {
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
-  /* background: linear-gradient(75.96deg, #8d2ed7 0%, #c277fd 99.48%); */
   /* padding: 50px 0; */
-  background: var(--black);
+  /* background: var(--black); */
   display: flex;
   flex-direction: column;
   align-items: center;
