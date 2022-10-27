@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios from "axios";
 import React from "react";
 import styled from "styled-components";
 import useLocalStorage from "use-local-storage";
@@ -61,11 +61,15 @@ function App() {
     setSites([]);
     setValue(e.target.value.toLowerCase());
 
-    axios.get(`https://autocomplete.clearbit.com/v1/companies/suggest?query=${e.target.value.toLowerCase()}`, {
-    }).then((response) => {
-      setSites(response.data);
-      setLoading(false);
-    })
+    axios
+      .get(
+        `https://autocomplete.clearbit.com/v1/companies/suggest?query=${e.target.value.toLowerCase()}`,
+        {}
+      )
+      .then((response) => {
+        setSites(response.data);
+        setLoading(false);
+      });
 
     if (e.nativeEvent.data === " ") {
       setTwo("Google SERP");
@@ -91,10 +95,10 @@ function App() {
   }, []);
 
   React.useEffect(() => {
-    if(sites.length === 0 && value.length === 0) {
-      setLoading(false)
+    if (sites.length === 0 && value.length === 0) {
+      setLoading(false);
     }
-  }, [sites])
+  }, [sites]);
 
   return (
     <Container data-theme={theme}>
