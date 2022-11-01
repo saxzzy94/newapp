@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+// eslint-disable-next-line no-unused-vars
 import ContentLoader from "react-content-loader";
 import { openNewTab } from "../action/bingAction";
 
@@ -32,10 +33,12 @@ const Icons = ({
 		} else {
 			setCursor(0);
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [sites, tabs]);
 
 	React.useEffect(() => {
 		tabs.length > 0 && handleRender(tabs[cursor].id);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [cursor]);
 
 	React.useEffect(() => {

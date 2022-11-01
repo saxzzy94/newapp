@@ -44,7 +44,7 @@ function App() {
 	const [five, setFive] = React.useState("");
 	const [hb, setHb] = React.useState(null);
 
-	const [commands, setCommands] = React.useState([
+	const [commands] = React.useState([
 		{
 			id: 1,
 			name: "Clipboard History",
