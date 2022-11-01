@@ -1,14 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 
-const Suggestion = ({ suggestion }) => {
+const Suggestion = ({ suggestion, handleRenderPage }) => {
   return (
     <Container>
-      <div className="left">
+      <div className="left" onClick={()=>handleRenderPage(suggestion.query)}>
         <div className="icon">
-          <suggestion.icon />
+          {/* <suggestion.icon /> */}
         </div>
-        <p>{suggestion?.name}</p>
+        <p>{suggestion?.displayText}</p>
       </div>
       <div className="right">
         <p>Application</p>

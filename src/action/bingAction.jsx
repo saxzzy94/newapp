@@ -8,7 +8,7 @@ export const getBingSearch = async (query) => {
 		)}&count=4`;
 
 		const headers = {
-			"Ocp-Apim-Subscription-Key": "feb3d66b1dce4a20baf44ca9aa50b749",
+			"Ocp-Apim-Subscription-Key": "e9304f36e5a74402a883041088cf3429",
 		};
 		const res = await axios.get(url, { headers });
 		return res.data.webPages.value;
@@ -17,16 +17,29 @@ export const getBingSearch = async (query) => {
 	}
 };
 
+export const bingAutoSuggest = async (query) => {
+	try {
+		const url = `https://api.bing.microsoft.com/v7.0/Suggestions?q=${query}`;
+		const headers = {
+			"Ocp-Apim-Subscription-Key": "e9304f36e5a74402a883041088cf3429",
+		};
+		const res = await axios.get(url, { headers });
+		return res.data.suggestionGroups[0].searchSuggestions;
+	} catch (err) {
+		console.log(err);
+	}
+};
 export const renderPage = async (hb, data) => {
 	try {
+		console.log("intializing tab");
 		const tabs = await data.map(async (item, index) => {
 			return await hb.tabs.create({
 				index: index,
-				url: item.url,
+				url: item.url || item.domain,
 				active: false,
 			});
 		});
-
+		console.log(tabs);
 		return Promise.all(tabs);
 	} catch (err) {
 		console.log(err);
@@ -38,14 +51,11 @@ export const updateTab = async (hb, id) => {
 };
 
 export async function loadHyperBeam(container) {
-	console.log(container);
-	return await Hyperbeam(
-		container,
-		"https://4w5rhqjkkux2w09ewbcx90zou.hyperbeam.com/FB6IJjRjSuGzdQT5K-qmnA?token=msm2xbavwuL4LXx7neK6VAfj3e2-zIOibV3OJET8_AE"
-	);
+	const res = await axios.get("https://sirch-api-rajesh-vishwa.vercel.app");
+	return await Hyperbeam(container, res.data.embed_url, {
+		adminToken: res.data.admin_token,
+	});
 }
-/* 
-admin_token: "ArGzFduVs_ZxZ64sKkAt-mudpwfw_845POijRCPgZd8"
-embed_url: "https://1aa2bnwfuuv7hod22dmbiqxql.hyperbeam.com/39Z_UVGgToieW1Qg6Bxkxg?token=XBpVsK59GY2ffV8cJU7FX67HPYE1Muy8RILb69fRbys"
-session_id: "dfd67f51-51a0-4e88-9e5b-5420e81c64c6"
-*/
+export const openNewTab = (id, index, url) => {
+	window.open(`https://${url}`, "__blank");
+};

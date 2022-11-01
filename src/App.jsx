@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import styled from "styled-components";
 import useLocalStorage from "use-local-storage";
@@ -13,8 +14,10 @@ import Command from "./components/command";
 import Suggestion from "./components/suggestion";
 import Instruction from "./components/instruction";
 import {
+	bingAutoSuggest,
 	getBingSearch,
 	loadHyperBeam,
+	openNewTab,
 	renderPage,
 	updateTab,
 } from "./action/bingAction";
@@ -26,12 +29,14 @@ function App() {
 		defaultDark ? "dark" : "light"
 	);
 
-	const container = document.getElementById("container");
+	const [tabs, setTabs] = React.useState([]);
+	const [data, setData] = React.useState([]);
+	const [value, setValue] = React.useState("");
+	const [sites, setSites] = React.useState([]);
+	const [loading, setLoading] = React.useState(false);
 	const [suggestions, setSuggestions] = React.useState([]);
 	const [suggestionsActive, setSuggestionsActive] = React.useState(false);
-	const [value, setValue] = React.useState("");
-	const [data, setData] = React.useState([]);
-
+	const [cursor, setCursor] = React.useState(0);
 	//instructions
 	const [one, setOne] = React.useState("");
 	const [two, setTwo] = React.useState("");
@@ -61,9 +66,23 @@ function App() {
 		const newTheme = theme === "light" ? "dark" : "light";
 		setTheme(newTheme);
 	};
-
-	const handleChange = (e) => {
+	function hasWhiteSpace(s) {
+		return /\s/g.test(s);
+	}
+	const handleChange = async (e) => {
+		setLoading(true);
 		setValue(e.target.value.toLowerCase());
+
+		if (hasWhiteSpace(e.target.value)) {
+			setSites([]);
+			const sug = await bingAutoSuggest(e.target.value);
+			setSuggestions(sug);
+			setSuggestionsActive(true);
+			await handleRenderPage(e.target.value);
+			
+		} else {
+			companySuggest(e);
+		}
 
 		if (e.nativeEvent.data === " ") {
 			setTwo("Google SERP");
@@ -81,20 +100,30 @@ function App() {
 		}
 	};
 
-	const handleRenderPage = async (data) => {
+	const handleRenderPage = async (value) => {
+		const data = await getBingSearch(value);
+		setData(data);
 		const tabs = await renderPage(hb, data);
 		await updateTab(hb, tabs[0].id);
-		setData(tabs);
+		setTabs(tabs);
 	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const data = await getBingSearch(value);
-		await handleRenderPage(data);
+		setLoading(false);
+		if (hasWhiteSpace(value)) {
+			await handleRenderPage(value);
+			setSuggestionsActive(false);
+		} else {
+			openNewTab(undefined, undefined, sites[cursor].domain);
+		}
 	};
+
 	const handleTabUpdate = async (id) => {
 		await updateTab(hb, id);
 	};
 	React.useEffect(() => {
+		const container = document.getElementById("container");
 		loadHyperBeam(container)
 			.then((hyperbeam) => {
 				setHb(hyperbeam);
@@ -102,96 +131,122 @@ function App() {
 			.catch((err) => {
 				console.error(err);
 			});
-
-		setOne("Sirch the web");
-		setTwo("Save current page");
-		setThree("Suggestions");
-		setFive("right");
 	}, []);
+
+	React.useEffect(() => {
+		if (sites.length === 0 && value.length === 0) {
+			setLoading(false);
+		}
+	}, [sites, value.length]);
 	return (
 		<>
-			<Container
-				data-theme={theme}
-				style={data.length > 0 ? { height: "0vh" } : { height: "100vh" }}>
-				<Icons data={data} handleRender={(id) => handleTabUpdate(id)} />
-				{data.length === 0 && (
-					<div className="search">
-						<form className="input" onSubmit={handleSubmit}>
-							<BiSearch className="icon" />
-							<input
-								type="text"
-								placeholder="Search here...."
-								value={value}
-								onChange={handleChange}
-							/>
-						</form>
+			<Container data-theme={theme}>
+				<label className="switch">
+					<input type="checkbox" />
+					<span className="slider round" onClick={switchTheme}></span>
+				</label>
 
-						{suggestionsActive && (
-							<div className="section">
-								<div className="title">
-									<p>Suggestions</p>
-								</div>
-								<div className="content">
-									{suggestions.length > 0 ? (
-										suggestions.map((suggestion) => (
-											<Suggestion
-												suggestion={suggestion}
-												key={suggestion?.id}
-											/>
-										))
-									) : (
-										<div className="para">
-											<p>No suggestions</p>
-										</div>
-									)}
-								</div>
-							</div>
-						)}
+				<Icons
+					sites={sites}
+					tabs={tabs}
+					data={data}
+					loading={loading}
+					handleRender={(id) => handleTabUpdate(id)}
+					cursor={cursor}
+					setCursor={(x) => {
+						setCursor(x);
+					}}
+				/>
+
+				<div className="search">
+					<form className="input" onSubmit={handleSubmit}>
+						<BiSearch className="icon" />
+						<input
+							type="text"
+							placeholder="Search here...."
+							value={value}
+							onChange={handleChange}
+						/>
+					</form>
+					{suggestionsActive && (
 						<div className="section">
 							<div className="title">
-								<p>Commands</p>
+								<p>Suggestions</p>
 							</div>
 							<div className="content">
-								{commands.map((command) => (
-									<Command command={command} key={command?.id} />
-								))}
+								{suggestions.length > 0 ? (
+									suggestions.map((suggestion, index) => (
+										<Suggestion
+											suggestion={suggestion}
+											key={index}
+											handleRenderPage={(query) => handleRenderPage(query)}
+										/>
+									))
+								) : (
+									<div className="para">
+										<p>No suggestions</p>
+									</div>
+								)}
 							</div>
 						</div>
-
-						<Instruction one={one} two={two} three={three} icon={five}>
-							{five === "right" ? (
-								<BsArrowRight className="icon" />
-							) : (
-								<BsArrowDown className="icon" />
-							)}
-						</Instruction>
+					)}
+					<div className="section">
+						<div className="title">
+							<p>Commands</p>
+						</div>
+						<div className="content">
+							{commands.map((command) => (
+								<Command command={command} key={command?.id} />
+							))}
+						</div>
 					</div>
-				)}
+					<Instruction one={one} two={two} three={three} icon={five}>
+						{five === "right" ? (
+							<BsArrowRight className="icon" />
+						) : (
+							<BsArrowDown className="icon" />
+						)}
+					</Instruction>
+				</div>
 			</Container>
-			<iframe
+			<div
 				title="render"
 				id="container"
 				style={
-					data.length === 0
+					tabs.length === 0
 						? { height: "0vh", width: "0vw" }
-						: { height: "100vh", width: "100vw" }
+						: { height: "100%", width: "100%" }
 				}
 			/>
 		</>
 	);
+
+	function companySuggest(e) {
+		axios
+			.get(
+				`https://autocomplete.clearbit.com/v1/companies/suggest?query=${e.target.value.toLowerCase()}`,
+				{}
+			)
+			.then((response) => {
+				setSites(response.data);
+				setLoading(false);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}
 }
 
 const Container = styled.div`
-	width: 100vw;
-	height: 100vh;
-	/* background: linear-gradient(75.96deg, #8d2ed7 0%, #c277fd 99.48%); */
+	width: 100%;
+	margin: auto;
 	/* padding: 50px 0; */
-	background: var(--black);
+	/* background: var(--black); */
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: flex-start;
-
+	position: absolute;
+	z-index: 1000;
 	.switch {
 		/* position: relative; */
 		display: inline-block;
@@ -332,4 +387,3 @@ const Container = styled.div`
 `;
 
 export default App;
-// kiosk,
