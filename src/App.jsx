@@ -79,7 +79,6 @@ function App() {
 			setSuggestions(sug);
 			setSuggestionsActive(true);
 			await handleRenderPage(e.target.value);
-			
 		} else {
 			companySuggest(e);
 		}
@@ -246,6 +245,7 @@ const Container = styled.div`
 	flex-direction: column;
 	align-items: center;
 	position: absolute;
+	right: 5%;
 	z-index: 1000;
 	.switch {
 		/* position: relative; */

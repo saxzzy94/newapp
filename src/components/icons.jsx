@@ -33,12 +33,12 @@ const Icons = ({
 		} else {
 			setCursor(0);
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [sites, tabs]);
 
 	React.useEffect(() => {
 		tabs.length > 0 && handleRender(tabs[cursor].id);
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [cursor]);
 
 	React.useEffect(() => {
@@ -67,7 +67,7 @@ const Icons = ({
 							tab.id,
 							`https://logo.clearbit.com/${getDomain(tab.pendingUrl)}` ||
 								`https://${getDomain(tab.pendingUrl)}/favicon.ico`,
-							data[index].name,
+							data[index]?.name || tab.pendingUrl,
 							tab.pendingUrl,
 							handleTabNav
 						)
