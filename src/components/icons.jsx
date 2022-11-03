@@ -24,7 +24,7 @@ const Icons = ({
 	const currentBingRecord = tabs.slice(indexOfFirstTab, indexOfLastTab);
 	const nNavsForDomain = Math.ceil(sites.length / tabsPerNav);
 	const nNavsForBing = Math.ceil(tabs.length / tabsPerNav);
-	
+
 	const nextNav = () => {
 		if (currentNav !== nNavsForBing) {
 			setCurrentNav(currentNav + 1);
@@ -40,11 +40,19 @@ const Icons = ({
 
 	const handleKeyDown = (e) => {
 		if (cursor === 3 && e.keyCode === 39) {
-			setCursor(0);
-			nextNav();
+			if (currentNav === nNavsForDomain || currentNav === nNavsForBing) {
+				setCursor(3);
+			} else {
+				setCursor(0);
+				nextNav();
+			}
 		} else if (cursor === 0 && e.keyCode === 37) {
-			setCursor(3)
-			prevNav();
+			if (currentNav === 1) {
+				setCursor(0);
+			} else {
+				setCursor(3);
+				prevNav();
+			}
 		} else {
 			if (e.keyCode === 37 && cursor > 0) {
 				setCursor(cursor - 1);
@@ -59,8 +67,6 @@ const Icons = ({
 	React.useEffect(() => {
 		if (sites.length === 0 && tabs.length === 0) {
 			setCursor(-1);
-		} else {
-			setCursor(0);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [sites, tabs]);
